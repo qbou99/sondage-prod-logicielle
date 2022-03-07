@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"createdAt", "updatedAt"},
+@JsonIgnoreProperties(value = {"commentaires", "estOuvert"},
         allowGetters = true)
 public class Sondage {
     @Id
@@ -24,25 +24,16 @@ public class Sondage {
     private String nom, description;
 
     @NotNull
-    @Temporal(TemporalType.TIME)
+    //@Temporal(TemporalType.TIME)
     private Date dateLimite;
 
     @ElementCollection
-    private List<Date> dates;
+    private List<String> dates;
 
     @ElementCollection
     private List<String> commentaires;
 
     private boolean estOuvert;
-
-    public Sondage(String nom, String description, Date dateLimite, List<Date> dates) {
-        this.nom = nom;
-        this.description = description;
-        this.dateLimite = dateLimite;
-        this.dates = dates;
-        this.commentaires = new ArrayList<>();
-        this.estOuvert = true;
-    }
 
     public Sondage() {
         this.nom = "";
@@ -51,6 +42,10 @@ public class Sondage {
         this.dates = new ArrayList<>();
         this.commentaires = new ArrayList<>();
         this.estOuvert = true;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getNom() {
@@ -77,19 +72,19 @@ public class Sondage {
         this.dateLimite = dateLimite;
     }
 
-    public List<Date> getDates() {
+    public List<String> getDates() {
         return dates;
     }
 
-    public void setDates(List<Date> dates) {
+    public void setDates(List<String> dates) {
         this.dates = dates;
     }
 
-    public void addDate(Date date) {
+    public void addDate(String date) {
         this.dates.add(date);
     }
 
-    public void deleteDate(Long dateId) {
+    public void deleteDate(int dateId) {
         this.dates.remove(dateId);
     }
 
@@ -99,6 +94,14 @@ public class Sondage {
 
     public void setCommentaires(List<String> commentaires) {
         this.commentaires = commentaires;
+    }
+
+    public void addCommentaire(String commentaire) {
+        this.commentaires.add(commentaire);
+    }
+
+    public void deleteCommentaire(int commentaireId) {
+        this.commentaires.remove(commentaireId);
     }
 
     public boolean isEstOuvert() {
