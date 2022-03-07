@@ -39,8 +39,7 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.setNom(updatedSondage.getNom());
-        sondage.setEstOuvert(updatedSondage.isEstOuvert());
-        sondage.setCommentaires(updatedSondage.getCommentaires());
+        sondage.setDescription(updatedSondage.getDescription());
         sondage.setDateLimite(updatedSondage.getDateLimite());
         sondage.setDates(updatedSondage.getDates());
         return sondageRepository.save(sondage);
