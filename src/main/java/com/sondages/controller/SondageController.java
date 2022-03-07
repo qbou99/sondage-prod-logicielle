@@ -3,8 +3,9 @@ package com.sondages.controller;
 import com.sondages.exception.ResourceNotFoundException;
 import com.sondages.model.Sondage;
 import com.sondages.repository.SondageRepository;
-import io.swagger.v3.oas.annotations.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/sondage")
 public class SondageController {
-    @Autowired
-    SondageRepository sondageRepository;
+    private final SondageRepository sondageRepository;
+
+    public SondageController(SondageRepository sondageRepository) {
+        this.sondageRepository = sondageRepository;
+    }
+
 
     @Operation(summary = "Récupère tout les sondages", description = "Permet de retrouver les informations concernant tout les sondages")
     @GetMapping("")
@@ -69,8 +74,7 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.setEstOuvert(false);
-        Sondage updatedSondage = sondageRepository.save(sondage);
-        return updatedSondage;
+        return sondageRepository.save(sondage);
     }
 
     @Operation(summary = "Ajoute une date à un sondage en fonction de son id", description = "Permet d'ajouter une date en plus de celle qui existe à un sondage spécifique")
@@ -82,8 +86,7 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.addDate(date);
-        Sondage updatedSondage = sondageRepository.save(sondage);
-        return updatedSondage;
+        return sondageRepository.save(sondage);
     }
 
     @Operation(summary = "Supprime une date à un sondage en fonction de son id et de l'id de la date", description = "Permet de supprimer une date qui existe à un sondage spécifique")
@@ -95,8 +98,7 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.deleteDate(dateId);
-        Sondage updatedSondage = sondageRepository.save(sondage);
-        return updatedSondage;
+        return sondageRepository.save(sondage);
     }
 
     @Operation(summary = "Récupère les dates d'un sondage en fonction de son id", description = "Permet de récupérer toutes les dates qui existent pour un sondage spécifique")
@@ -118,8 +120,7 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.addCommentaire(commentaire);
-        Sondage updatedSondage = sondageRepository.save(sondage);
-        return updatedSondage;
+        return sondageRepository.save(sondage);
     }
 
     @Operation(summary = "Supprime un commentaire dans un sondage en fonction de son id et de l'id du commentaire", description = "Permet de supprimer un commentaire qui existe pour un sondage spécifique")
@@ -131,8 +132,7 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.deleteCommentaire(commentaireId);
-        Sondage updatedSondage = sondageRepository.save(sondage);
-        return updatedSondage;
+        return sondageRepository.save(sondage);
     }
 
     @Operation(summary = "Modifie un commentaire dans un sondage en fonction de son id et de l'id du commentaire", description = "Permet de modifier un commentaire qui existe pour un sondage spécifique")
@@ -146,8 +146,17 @@ public class SondageController {
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.deleteCommentaire(commentaireId);
         sondage.addCommentaire(commentaire);
-        Sondage updatedSondage = sondageRepository.save(sondage);
-        return updatedSondage;
+        return sondageRepository.save(sondage);
+    }
+
+    @Operation(summary = "Récupère les commentaires d'un sondage en fonction de son id", description = "Permet de récupérer tout les commentaires qui existent pour un sondage spécifique")
+    @Parameter(name = "id", description = "L'id du sondage", example = "1")
+    @GetMapping("/{id}/commentaires")
+    public List<String> getCommentaires(
+            @PathVariable("id") Long sondageId) {
+        Sondage sondage = sondageRepository.findById(sondageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
+        return sondage.getDates();
     }
 }
 
