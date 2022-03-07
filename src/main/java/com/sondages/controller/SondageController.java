@@ -156,7 +156,7 @@ public class SondageController {
             @PathVariable("id") Long sondageId) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
-        return sondage.getDates();
+        return sondage.getCommentaires();
     }
 }
 
