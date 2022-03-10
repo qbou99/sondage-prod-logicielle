@@ -1,7 +1,9 @@
 package com.sondages.controller;
 
 import com.sondages.exception.ResourceNotFoundException;
+import com.sondages.model.ChoixVote;
 import com.sondages.model.Sondage;
+import com.sondages.model.Vote;
 import com.sondages.repository.SondageRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/sondage")
@@ -157,6 +159,64 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         return sondage.getCommentaires();
+    }
+
+    @Operation(summary = "Récupère les votes d'un sondage en fonction de son id", description = "Permet de récupérer tout les votes qui existent pour un sondage spécifique")
+    @Parameter(name = "id", description = "L'id du sondage", example = "1")
+    @GetMapping("/{id}/votes")
+    public List<Vote> getVotes(
+            @PathVariable("id") Long sondageId) {
+        Sondage sondage = sondageRepository.findById(sondageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
+        return sondage.getVotes();
+    }
+
+    @Operation(summary = "Récupère la date qui a le plus de vote Disponible pour un sondage", description = "Permet de récupérer la date à laquelle le plus de monde sera présent de manière certaine")
+    @Parameter(name = "id", description = "L'id du sondage", example = "1")
+    @GetMapping("/{id}/meilleureDateDispo")
+    public String getMeilleureDateCertain(
+            @PathVariable("id") Long sondageId) {
+        List<ChoixVote> choixVotes = new ArrayList<>();
+        choixVotes.add(ChoixVote.Disponible);
+        return getMeilleureDate(choixVotes, sondageId);
+    }
+
+    @Operation(summary = "Récupère la date qui a le plus de vote Disponible et PeutEtre pour un sondage", description = "Permet de récupérer la date à laquelle le plus de monde sera présent de manière eventuelle")
+    @Parameter(name = "id", description = "L'id du sondage", example = "1")
+    @GetMapping("/{id}/meilleureDateDispoEtPeutetre")
+    public String getMeilleureDateEventuellement(
+            @PathVariable("id") Long sondageId) {
+        List<ChoixVote> choixVotes = new ArrayList<>();
+        choixVotes.add(ChoixVote.Disponible);
+        choixVotes.add(ChoixVote.PeutEtre);
+        return getMeilleureDate(choixVotes, sondageId);
+    }
+
+    /**
+     * Méthode permettant de retrouver la date à laquelle le plus de participant ont voté suivant une/des disponibilité(s)
+     *
+     * @param choixVotes La liste des disponibilités prises en compte
+     * @param sondageId  L'id du sondage sur lequel les votes sont analysés
+     * @return La meilleure date d'un sondage par rapport aux disponibilités demandées
+     */
+    String getMeilleureDate(List<ChoixVote> choixVotes, Long sondageId) {
+        Sondage sondage = sondageRepository.findById(sondageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
+
+        Map<String, Integer> countDispo = new HashMap<>();
+        List<String> dates = sondage.getDates();
+
+        for (String date : dates) {
+            countDispo.put(date, 0);
+        }
+        for (Vote vote : sondage.getVotes()) {
+            for (ChoixVote choixVote : choixVotes) {
+                if (vote.getChoix() == choixVote)
+                    countDispo.put(vote.getChoixDate(), countDispo.get(vote.getChoixDate()) + 1);
+            }
+        }
+        Map.Entry<String, Integer> entry = countDispo.entrySet().stream().max(Comparator.comparingInt(Map.Entry::getValue)).get();
+        return entry.getKey();
     }
 }
 
