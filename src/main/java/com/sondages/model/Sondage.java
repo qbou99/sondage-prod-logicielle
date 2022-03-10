@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"commentaires", "estOuvert"},
+@JsonIgnoreProperties(value = {"commentaires", "estOuvert", "votes"},
         allowGetters = true)
 public class Sondage {
     @Id
@@ -24,7 +24,7 @@ public class Sondage {
     private String nom, description;
 
     @NotNull
-    //@Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateLimite;
 
     @ElementCollection
@@ -35,6 +35,9 @@ public class Sondage {
 
     private boolean estOuvert;
 
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Vote> votes;
+
     public Sondage() {
         this.nom = "";
         this.description = "";
@@ -42,6 +45,7 @@ public class Sondage {
         this.dates = new ArrayList<>();
         this.commentaires = new ArrayList<>();
         this.estOuvert = true;
+        this.votes = new ArrayList<>();
     }
 
     public Long getId() {
@@ -112,6 +116,19 @@ public class Sondage {
         this.estOuvert = estOuvert;
     }
 
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
+    public void addVote(Vote vote) {
+        this.votes.add(vote);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,12 +140,13 @@ public class Sondage {
                 Objects.equals(description, sondage.description) &&
                 Objects.equals(dateLimite, sondage.dateLimite) &&
                 Objects.equals(dates, sondage.dates) &&
-                Objects.equals(commentaires, sondage.commentaires);
+                Objects.equals(commentaires, sondage.commentaires) &&
+                Objects.equals(votes, sondage.votes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nom, description, dateLimite, dates, commentaires, estOuvert);
+        return Objects.hash(id, nom, description, dateLimite, dates, commentaires, estOuvert, votes);
     }
 
     @Override
@@ -141,6 +159,7 @@ public class Sondage {
                 ", dates=" + dates +
                 ", commentaires=" + commentaires +
                 ", estOuvert=" + estOuvert +
+                ", votes=" + votes +
                 '}';
     }
 }
