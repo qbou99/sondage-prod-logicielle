@@ -25,7 +25,7 @@ public class ParticipantController {
 
     @Operation(summary = "Créé un participant", description = "Permet de créer un participant à l'aide d'un document json")
     @PostMapping("")
-    public Participant createParticipant(@Valid @RequestBody Participant participant) {
+    public Participant createParticipant(@Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le participant créé") Participant participant) {
         return participantRepository.save(participant);
     }
 }

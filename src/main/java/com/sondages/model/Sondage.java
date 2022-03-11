@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"commentaires", "estOuvert", "votes"},
+@JsonIgnoreProperties(value = {"id", "commentaires", "estOuvert", "votes"},
         allowGetters = true)
 public class Sondage {
     @Id
@@ -127,6 +127,10 @@ public class Sondage {
 
     public void addVote(Vote vote) {
         this.votes.add(vote);
+    }
+
+    public void deleteVote(int voteId) {
+        this.votes.remove(voteId);
     }
 
     @Override

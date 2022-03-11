@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/vote")
 public class VoteController {
@@ -38,8 +40,8 @@ public class VoteController {
     public Vote vote(@PathVariable("sondageId") Long sondageId,
                      @PathVariable("participantId") Long participantId,
                      @PathVariable("choixVote") ChoixVote choixVote,
-                     @Parameter(name = "date", description = "La date sondée", example = "jeudi")
-                     @RequestBody String date) {
+                     @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "La date sondée")
+                             String date) {
 
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
@@ -65,5 +67,19 @@ public class VoteController {
         sondageRepository.save(sondage);
 
         return addVote;
+    }
+
+    @Operation(summary = "Récupère tout les votes", description = "Permet de retrouver les informations concernant tout les votes")
+    @GetMapping("")
+    public List<Vote> getAllVotes() {
+        return voteRepository.findAll();
+    }
+
+    @Operation(summary = "Récupère un vote en fonction de son id", description = "Permet de retrouver les informations concernant un vote spécifique")
+    @Parameter(name = "id", description = "L'id du vote", example = "1")
+    @GetMapping("/{id}")
+    public Vote getVoteById(@PathVariable(value = "id") Long voteId) {
+        return voteRepository.findById(voteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vote", "id", voteId));
     }
 }

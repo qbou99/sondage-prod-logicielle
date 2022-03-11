@@ -32,7 +32,10 @@ public class SondageController {
 
     @Operation(summary = "Créé un sondage", description = "Permet de créer un sondage à l'aide d'un document json")
     @PostMapping("")
-    public Sondage createSondage(@Valid @RequestBody Sondage sondage) {
+    public Sondage createSondage(
+            @Valid
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le sondage créé")
+                    Sondage sondage) {
         return sondageRepository.save(sondage);
     }
 
@@ -44,17 +47,19 @@ public class SondageController {
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
     }
 
-    @Operation(summary = "Modifie un sondage en fonction de son id", description = "Permet de modifier les informations concernant un sondage spécifique")
+    @Operation(summary = "Modifie un sondage en fonction de son id", description = "Permet de modifier les informations concernant un sondage spécifique (ne permet pas la modification des dates par sécurité)")
     @Parameter(name = "id", description = "L'id du sondage", example = "1")
     @PutMapping("/{id}")
-    public Sondage updateSondage(@PathVariable(value = "id") Long sondageId,
-                                 @Valid @RequestBody Sondage updatedSondage) {
+    public Sondage updateSondage(
+            @PathVariable(value = "id") Long sondageId,
+            @Valid
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le sondage modifié")
+                    Sondage updatedSondage) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.setNom(updatedSondage.getNom());
         sondage.setDescription(updatedSondage.getDescription());
         sondage.setDateLimite(updatedSondage.getDateLimite());
-        sondage.setDates(updatedSondage.getDates());
         return sondageRepository.save(sondage);
     }
 
@@ -84,14 +89,15 @@ public class SondageController {
     @PostMapping("/ajouterDate/{id}")
     public Sondage addDate(
             @PathVariable("id") Long sondageId,
-            @RequestBody String date) {
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "La date en plus avec laquelle le sondage sera mis à jour")
+                    String date) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.addDate(date);
         return sondageRepository.save(sondage);
     }
 
-    @Operation(summary = "Supprime une date à un sondage en fonction de son id et de l'id de la date", description = "Permet de supprimer une date qui existe à un sondage spécifique")
+    @Operation(summary = "Supprime une date à un sondage en fonction de son id et de l'id de la date", description = "Permet de supprimer une date qui existe à un sondage spécifique (supprime également les votes contenant cette date)")
     @Parameters({@Parameter(name = "id", description = "L'id du sondage", example = "1"), @Parameter(name = "date_id", description = "L'id de la date", example = "0")})
     @DeleteMapping("/supprimerDate/{id}/{date_id}")
     public Sondage deleteDate(
@@ -100,6 +106,12 @@ public class SondageController {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.deleteDate(dateId);
+
+        for (int i = 0; i < sondage.getVotes().size(); i++) {
+            if (sondage.getVotes().get(i).getChoixDate().equals(sondage.getDates().get(dateId)))
+                sondage.deleteVote(i);
+        }
+
         return sondageRepository.save(sondage);
     }
 
@@ -118,7 +130,8 @@ public class SondageController {
     @PostMapping("/ajouterCommentaire/{id}")
     public Sondage addCommentaire(
             @PathVariable("id") Long sondageId,
-            @RequestBody String commentaire) {
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le commentaire en plus avec lequel le sondage sera mis à jour")
+                    String commentaire) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.addCommentaire(commentaire);
@@ -141,9 +154,10 @@ public class SondageController {
     @Parameters({@Parameter(name = "id", description = "L'id du sondage", example = "1"), @Parameter(name = "commentaire_id", description = "L'id du commentaire", example = "0")})
     @PutMapping("/modifierCommentaire/{id}/{commentaire_id}")
     public Sondage modifieCommentaire(
-            @RequestBody String commentaire,
             @PathVariable("id") Long sondageId,
-            @PathVariable("commentaire_id") int commentaireId) {
+            @PathVariable("commentaire_id") int commentaireId,
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le commentaire modifié avec lequel le sondage sera mis à jour")
+                    String commentaire) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
         sondage.deleteCommentaire(commentaireId);

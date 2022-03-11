@@ -1,5 +1,7 @@
 package com.sondages.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
+@JsonIgnoreProperties(value = "id",
+        allowGetters = true)
 public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
