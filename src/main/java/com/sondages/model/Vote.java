@@ -35,7 +35,6 @@ public class Vote {
     public Vote() {
         this.participant = null;
         this.creationDate = new Date();
-        this.choix = null;
         this.choixDate = "";
     }
 

@@ -21,7 +21,10 @@ public class Sondage {
     private Long id;
 
     @NotBlank
-    private String nom, description;
+    private String nom;
+
+    @NotBlank
+    private String description;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,6 +49,10 @@ public class Sondage {
         this.commentaires = new ArrayList<>();
         this.estOuvert = true;
         this.votes = new ArrayList<>();
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -115,7 +122,6 @@ public class Sondage {
     public void setEstOuvert(boolean estOuvert) {
         this.estOuvert = estOuvert;
     }
-
 
     public List<Vote> getVotes() {
         return votes;

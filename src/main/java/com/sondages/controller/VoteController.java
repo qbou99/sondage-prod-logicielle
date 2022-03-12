@@ -11,7 +11,6 @@ import com.sondages.repository.SondageRepository;
 import com.sondages.repository.VoteRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,14 +30,12 @@ public class VoteController {
     }
 
     @Operation(summary = "Permet de voter pour une date à un sondage")
-    @Parameters({
-            @Parameter(name = "sondageId", description = "L'id du sondage", example = "1"),
-            @Parameter(name = "participantId", description = "L'id du participant", example = "1"),
-            @Parameter(name = "choixVote", description = "La disponibilité à la date votée", example = "Disponible")
-    })
     @PostMapping("/{sondageId}/{participantId}/{choixVote}")
-    public Vote vote(@PathVariable("sondageId") Long sondageId,
+    public Vote vote(@Parameter(name = "sondageId", description = "L'id du sondage", example = "1")
+                     @PathVariable("sondageId") Long sondageId,
+                     @Parameter(name = "participantId", description = "L'id du participant", example = "1")
                      @PathVariable("participantId") Long participantId,
+                     @Parameter(name = "choixVote", description = "La disponibilité à la date votée", example = "Disponible")
                      @PathVariable("choixVote") ChoixVote choixVote,
                      @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "La date sondée")
                              String date) {

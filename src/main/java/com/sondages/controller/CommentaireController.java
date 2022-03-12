@@ -10,7 +10,6 @@ import com.sondages.repository.ParticipantRepository;
 import com.sondages.repository.SondageRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/commentaire")
 public class CommentaireController {
-
     private final CommentaireRepository commentaireRepository;
     private final ParticipantRepository participantRepository;
     private final SondageRepository sondageRepository;
+
+    private static final String CLASS_NAME = "Commentaire";
 
     public CommentaireController(CommentaireRepository commentaireRepository, ParticipantRepository participantRepository, SondageRepository sondageRepository) {
         this.commentaireRepository = commentaireRepository;
@@ -32,12 +32,10 @@ public class CommentaireController {
     }
 
     @Operation(summary = "Permet à un participant de commenter un sondage (le sondage doit être ouvert)")
-    @Parameters({
-            @Parameter(name = "sondageId", description = "L'id du sondage", example = "1"),
-            @Parameter(name = "participantId", description = "L'id du participant", example = "1"),
-    })
     @PostMapping("/{sondageId}/{participantId}/")
-    public Commentaire vote(@PathVariable("sondageId") Long sondageId,
+    public Commentaire vote(@Parameter(name = "sondageId", description = "L'id du sondage", example = "1")
+                            @PathVariable("sondageId") Long sondageId,
+                            @Parameter(name = "participantId", description = "L'id du participant", example = "1")
                             @PathVariable("participantId") Long participantId,
                             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le texte associé au commentaire")
                                     String texte) {
@@ -75,7 +73,7 @@ public class CommentaireController {
     @GetMapping("/{id}")
     public Commentaire getCommentaireById(@PathVariable(value = "id") Long commentaireId) {
         return commentaireRepository.findById(commentaireId)
-                .orElseThrow(() -> new ResourceNotFoundException("Commentaire", "id", commentaireId));
+                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", commentaireId));
     }
 
     @Operation(summary = "Modifie un commentaire en fonction de son id", description = "Permet de modifier les informations concernant un commentaire spécifique")
@@ -87,7 +85,7 @@ public class CommentaireController {
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le commentaire modifié (seul le texte peut changer)")
                     Commentaire updatedCommentaire) {
         Commentaire commmentaire = commentaireRepository.findById(commentaireId)
-                .orElseThrow(() -> new ResourceNotFoundException("Commentaire", "id", commentaireId));
+                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", commentaireId));
         commmentaire.setTexte(updatedCommentaire.getTexte());
         return commentaireRepository.save(commmentaire);
     }
@@ -96,10 +94,10 @@ public class CommentaireController {
     @Parameter(name = "id", description = "L'id du commentaire", example = "1")
     @Parameter(name = "sondageId", description = "L'id du sondage", example = "1")
     @DeleteMapping("/{id}/{sondageId}")
-    public ResponseEntity<?> deleteCommentaire(@PathVariable(value = "id") Long commentaireId,
+    public ResponseEntity<Commentaire> deleteCommentaire(@PathVariable(value = "id") Long commentaireId,
                                                @PathVariable(value = "sondageId") Long sondageId) {
         Commentaire commentaire = commentaireRepository.findById(commentaireId)
-                .orElseThrow(() -> new ResourceNotFoundException("Commentaire", "id", commentaireId));
+                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", commentaireId));
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
 
