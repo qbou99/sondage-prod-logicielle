@@ -2,12 +2,12 @@ package com.sondages.controller;
 
 import com.sondages.exception.ResourceNotFoundException;
 import com.sondages.model.ChoixVote;
+import com.sondages.model.Commentaire;
 import com.sondages.model.Sondage;
 import com.sondages.model.Vote;
 import com.sondages.repository.SondageRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -129,50 +129,10 @@ public class SondageController {
         return sondage.getDates();
     }
 
-    @Operation(summary = "Ajoute un commentaire dans un sondage en fonction de son id", description = "Permet d'ajouter un commentaire en plus de ceux qui existent pour un sondage spécifique")
-    @Parameter(name = "id", description = "L'id du sondage", example = "1")
-    @PostMapping("/ajouterCommentaire/{id}")
-    public Sondage addCommentaire(
-            @PathVariable("id") Long sondageId,
-            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le commentaire en plus avec lequel le sondage sera mis à jour")
-                    String commentaire) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
-        sondage.addCommentaire(commentaire);
-        return sondageRepository.save(sondage);
-    }
-
-    @Operation(summary = "Supprime un commentaire dans un sondage en fonction de son id et de l'id du commentaire", description = "Permet de supprimer un commentaire qui existe pour un sondage spécifique")
-    @Parameters({@Parameter(name = "id", description = "L'id du sondage", example = "1"), @Parameter(name = "commentaire_id", description = "L'id du commentaire", example = "0")})
-    @DeleteMapping("/supprimerCommentaire/{id}/{commentaire_id}")
-    public Sondage deleteCommentaire(
-            @PathVariable("id") Long sondageId,
-            @PathVariable("commentaire_id") int commentaireId) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
-        sondage.deleteCommentaire(commentaireId);
-        return sondageRepository.save(sondage);
-    }
-
-    @Operation(summary = "Modifie un commentaire dans un sondage en fonction de son id et de l'id du commentaire", description = "Permet de modifier un commentaire qui existe pour un sondage spécifique")
-    @Parameters({@Parameter(name = "id", description = "L'id du sondage", example = "1"), @Parameter(name = "commentaire_id", description = "L'id du commentaire", example = "0")})
-    @PutMapping("/modifierCommentaire/{id}/{commentaire_id}")
-    public Sondage modifieCommentaire(
-            @PathVariable("id") Long sondageId,
-            @PathVariable("commentaire_id") int commentaireId,
-            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le commentaire modifié avec lequel le sondage sera mis à jour")
-                    String commentaire) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
-        sondage.deleteCommentaire(commentaireId);
-        sondage.addCommentaire(commentaire);
-        return sondageRepository.save(sondage);
-    }
-
     @Operation(summary = "Récupère les commentaires d'un sondage en fonction de son id", description = "Permet de récupérer tout les commentaires qui existent pour un sondage spécifique")
     @Parameter(name = "id", description = "L'id du sondage", example = "1")
     @GetMapping("/{id}/commentaires")
-    public List<String> getCommentaires(
+    public List<Commentaire> getCommentaires(
             @PathVariable("id") Long sondageId) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));

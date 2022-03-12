@@ -2,18 +2,16 @@ package com.sondages.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"id", "creationDate"},
         allowGetters = true)
-public class Vote {
+public class Commentaire {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -21,22 +19,18 @@ public class Vote {
     @ManyToOne
     private Participant participant;
 
+    @NotBlank
+    private String texte;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @NotNull
-    private ChoixVote choix;
-
-    @NotNull
-    private String choixDate;
-
-    public Vote() {
+    public Commentaire() {
         this.participant = null;
         this.creationDate = new Date();
-        this.choix = null;
-        this.choixDate = "";
+        this.texte = "";
     }
 
     public long getId() {
@@ -51,6 +45,14 @@ public class Vote {
         this.participant = participant;
     }
 
+    public String getTexte() {
+        return texte;
+    }
+
+    public void setTexte(String texte) {
+        this.texte = texte;
+    }
+
     public Date getCreationDate() {
         return creationDate;
     }
@@ -59,47 +61,29 @@ public class Vote {
         this.creationDate = creationDate;
     }
 
-    public ChoixVote getChoix() {
-        return choix;
-    }
-
-    public void setChoix(ChoixVote choix) {
-        this.choix = choix;
-    }
-
-    public String getChoixDate() {
-        return choixDate;
-    }
-
-    public void setChoixDate(String choixDate) {
-        this.choixDate = choixDate;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Vote vote = (Vote) o;
-        return id == vote.id &&
-                Objects.equals(participant, vote.participant) &&
-                Objects.equals(creationDate, vote.creationDate) &&
-                choix == vote.choix &&
-                Objects.equals(choixDate, vote.choixDate);
+        Commentaire that = (Commentaire) o;
+        return id == that.id &&
+                Objects.equals(participant, that.participant) &&
+                Objects.equals(texte, that.texte) &&
+                Objects.equals(creationDate, that.creationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, participant, creationDate, choix, choixDate);
+        return Objects.hash(id, participant, texte, creationDate);
     }
 
     @Override
     public String toString() {
-        return "Vote{" +
+        return "Commentaire{" +
                 "id=" + id +
                 ", participant=" + participant +
+                ", texte='" + texte + '\'' +
                 ", creationDate=" + creationDate +
-                ", choix=" + choix +
-                ", choixDate=" + choixDate +
                 '}';
     }
 }

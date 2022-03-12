@@ -30,8 +30,8 @@ public class Sondage {
     @ElementCollection
     private List<String> dates;
 
-    @ElementCollection
-    private List<String> commentaires;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Commentaire> commentaires;
 
     private boolean estOuvert;
 
@@ -92,20 +92,20 @@ public class Sondage {
         this.dates.remove(date);
     }
 
-    public List<String> getCommentaires() {
+    public List<Commentaire> getCommentaires() {
         return commentaires;
     }
 
-    public void setCommentaires(List<String> commentaires) {
+    public void setCommentaires(List<Commentaire> commentaires) {
         this.commentaires = commentaires;
     }
 
-    public void addCommentaire(String commentaire) {
+    public void addCommentaire(Commentaire commentaire) {
         this.commentaires.add(commentaire);
     }
 
-    public void deleteCommentaire(int commentaireId) {
-        this.commentaires.remove(commentaireId);
+    public void deleteCommentaire(Commentaire commentaire) {
+        this.commentaires.remove(commentaire);
     }
 
     public boolean isEstOuvert() {
