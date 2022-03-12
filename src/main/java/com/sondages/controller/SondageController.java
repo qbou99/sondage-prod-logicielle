@@ -96,7 +96,8 @@ public class SondageController {
         return sondageRepository.save(sondage);
     }
 
-    @Operation(summary = "Supprime une date à un sondage en fonction de son id et de la date choisie", description = "Permet de supprimer une date qui existe à un sondage spécifique (supprime également les votes contenant cette date)")
+    @Operation(summary = "Supprime une date à un sondage en fonction de son id et de la date choisie",
+            description = "Permet de supprimer une date qui existe à un sondage spécifique (supprime également les votes contenant cette date)")
     @Parameter(name = "id", description = "L'id du sondage", example = "1")
     @DeleteMapping("/supprimerDate/{id}")
     public Sondage deleteDate(

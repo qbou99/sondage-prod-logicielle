@@ -53,6 +53,7 @@ public class CommentaireController {
             throw new BadRequestException("Sondage fermé");
         }
         commentaire.setParticipant(participant);
+        commentaire.setSondageId(sondageId);
         commentaire.setTexte(texte);
         Commentaire addCommentaire = commentaireRepository.save(commentaire);
 
@@ -92,18 +93,15 @@ public class CommentaireController {
 
     @Operation(summary = "Supprime un commentaire en fonction de son id", description = "Permet de supprimer un commentaire spécifique")
     @Parameter(name = "id", description = "L'id du commentaire", example = "1")
-    @Parameter(name = "sondageId", description = "L'id du sondage", example = "1")
-    @DeleteMapping("/{id}/{sondageId}")
-    public ResponseEntity<Commentaire> deleteCommentaire(@PathVariable(value = "id") Long commentaireId,
-                                               @PathVariable(value = "sondageId") Long sondageId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Commentaire> deleteCommentaire(@PathVariable(value = "id") Long commentaireId) {
         Commentaire commentaire = commentaireRepository.findById(commentaireId)
                 .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", commentaireId));
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
+        Sondage sondage = sondageRepository.findById(commentaire.getSondageId())
+                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", commentaire.getSondageId()));
 
         sondage.deleteCommentaire(commentaire);
         sondageRepository.save(sondage);
-
         commentaireRepository.delete(commentaire);
         return ResponseEntity.ok().build();
     }

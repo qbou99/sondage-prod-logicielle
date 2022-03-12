@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Objects;
 
@@ -18,6 +19,9 @@ public class Commentaire {
 
     @ManyToOne
     private Participant participant;
+
+    @NotNull
+    private Long sondageId;
 
     @NotBlank
     private String texte;
@@ -45,6 +49,14 @@ public class Commentaire {
         this.participant = participant;
     }
 
+    public Long getSondageId() {
+        return sondageId;
+    }
+
+    public void setSondageId(Long sondageId) {
+        this.sondageId = sondageId;
+    }
+
     public String getTexte() {
         return texte;
     }
@@ -68,13 +80,14 @@ public class Commentaire {
         Commentaire that = (Commentaire) o;
         return id == that.id &&
                 Objects.equals(participant, that.participant) &&
+                Objects.equals(sondageId, that.sondageId) &&
                 Objects.equals(texte, that.texte) &&
                 Objects.equals(creationDate, that.creationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, participant, texte, creationDate);
+        return Objects.hash(id, participant, sondageId, texte, creationDate);
     }
 
     @Override
@@ -82,6 +95,7 @@ public class Commentaire {
         return "Commentaire{" +
                 "id=" + id +
                 ", participant=" + participant +
+                ", sondageId=" + sondageId +
                 ", texte='" + texte + '\'' +
                 ", creationDate=" + creationDate +
                 '}';
