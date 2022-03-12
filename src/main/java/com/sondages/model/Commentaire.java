@@ -37,6 +37,12 @@ public class Commentaire {
         this.texte = "";
     }
 
+    public Commentaire(String texte) {
+        this.participant = null;
+        this.creationDate = new Date();
+        this.texte = texte;
+    }
+
     public long getId() {
         return id;
     }

@@ -50,8 +50,18 @@ public class Sondage {
         this.estOuvert = true;
         this.votes = new ArrayList<>();
     }
+    
+    public Sondage(Long id, String nom, String description) {
+        this.nom = nom;
+        this.description = description;
+        this.dateLimite = new Date();
+        this.dates = new ArrayList<>();
+        this.commentaires = new ArrayList<>();
+        this.estOuvert = true;
+        this.votes = new ArrayList<>();
+    }
 
-    public void setId(Long id) {
+    private void setId(Long id) {
         this.id = id;
     }
 

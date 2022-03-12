@@ -38,6 +38,19 @@ public class Vote {
         this.choixDate = "";
     }
 
+    public Vote(String choixDate) {
+        this.participant = null;
+        this.creationDate = new Date();
+        this.choixDate = choixDate;
+    }
+
+    public Vote(String choixDate, ChoixVote choix) {
+        this.participant = null;
+        this.creationDate = new Date();
+        this.choixDate = choixDate;
+        this.choix = choix;
+    }
+
     public long getId() {
         return id;
     }

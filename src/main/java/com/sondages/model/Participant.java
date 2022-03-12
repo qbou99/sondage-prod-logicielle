@@ -24,6 +24,10 @@ public class Participant {
         this.nom = "";
     }
 
+    public Participant(String nom) {
+        this.nom = nom;
+    }
+
     public long getId() {
         return id;
     }
