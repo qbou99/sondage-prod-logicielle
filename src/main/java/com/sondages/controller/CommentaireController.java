@@ -21,14 +21,18 @@ import java.util.List;
 public class CommentaireController {
     private final CommentaireRepository commentaireRepository;
     private final ParticipantRepository participantRepository;
+    private final ParticipantController participantController;
     private final SondageRepository sondageRepository;
+    private final SondageController sondageController;
 
     private static final String CLASS_NAME = "Commentaire";
 
     public CommentaireController(CommentaireRepository commentaireRepository, ParticipantRepository participantRepository, SondageRepository sondageRepository) {
         this.commentaireRepository = commentaireRepository;
         this.participantRepository = participantRepository;
+        this.participantController = new ParticipantController(participantRepository);
         this.sondageRepository = sondageRepository;
+        this.sondageController = new SondageController(sondageRepository);
     }
 
     @Operation(summary = "Permet à un participant de commenter un sondage (le sondage doit être ouvert)")
@@ -40,10 +44,9 @@ public class CommentaireController {
                             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le texte associé au commentaire")
                                     String texte) {
 
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
-        Participant participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Participant", "id", participantId));
+        Sondage sondage = sondageController.getSondageById(sondageId);
+
+        Participant participant = participantController.getParticipantById(participantId);
 
         Commentaire commentaire = new Commentaire();
 
@@ -85,8 +88,8 @@ public class CommentaireController {
             @Valid
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le commentaire modifié (seul le texte peut changer)")
                     Commentaire updatedCommentaire) {
-        Commentaire commmentaire = commentaireRepository.findById(commentaireId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", commentaireId));
+        Commentaire commmentaire = getCommentaireById(commentaireId);
+
         commmentaire.setTexte(updatedCommentaire.getTexte());
         return commentaireRepository.save(commmentaire);
     }
@@ -95,10 +98,9 @@ public class CommentaireController {
     @Parameter(name = "id", description = "L'id du commentaire", example = "1")
     @DeleteMapping("/{id}")
     public ResponseEntity<Commentaire> deleteCommentaire(@PathVariable(value = "id") Long commentaireId) {
-        Commentaire commentaire = commentaireRepository.findById(commentaireId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", commentaireId));
-        Sondage sondage = sondageRepository.findById(commentaire.getSondageId())
-                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", commentaire.getSondageId()));
+        Commentaire commentaire = getCommentaireById(commentaireId);
+
+        Sondage sondage = sondageController.getSondageById(commentaire.getSondageId());
 
         sondage.deleteCommentaire(commentaire);
         sondageRepository.save(sondage);

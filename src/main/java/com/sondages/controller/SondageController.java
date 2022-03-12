@@ -54,8 +54,8 @@ public class SondageController {
             @Valid
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le sondage modifié (les dates d'un sondage ne peuvent pas être modifiées)")
                     Sondage updatedSondage) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         sondage.setNom(updatedSondage.getNom());
         sondage.setDescription(updatedSondage.getDescription());
         sondage.setDateLimite(updatedSondage.getDateLimite());
@@ -66,8 +66,8 @@ public class SondageController {
     @Parameter(name = "id", description = "L'id du sondage", example = "1")
     @DeleteMapping("/{id}")
     public ResponseEntity<Sondage> deleteSondage(@PathVariable(value = "id") Long sondageId) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         sondageRepository.delete(sondage);
         return ResponseEntity.ok().build();
     }
@@ -77,8 +77,8 @@ public class SondageController {
     @PostMapping("/{id}")
     public Sondage closeSondage(
             @PathVariable("id") Long sondageId) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         sondage.setEstOuvert(false);
         return sondageRepository.save(sondage);
     }
@@ -90,8 +90,8 @@ public class SondageController {
             @PathVariable("id") Long sondageId,
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "La date en plus avec laquelle le sondage sera mis à jour")
                     String date) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         sondage.addDate(date);
         return sondageRepository.save(sondage);
     }
@@ -104,8 +104,8 @@ public class SondageController {
             @PathVariable("id") Long sondageId,
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "La date que l'on souhaite supprimée du sondage")
                     String date) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         sondage.deleteDate(date);
 
         ArrayList<Vote> voteRemove = new ArrayList<>();
@@ -124,8 +124,8 @@ public class SondageController {
     @GetMapping("/{id}/dates")
     public List<String> getDates(
             @PathVariable("id") Long sondageId) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         return sondage.getDates();
     }
 
@@ -134,8 +134,8 @@ public class SondageController {
     @GetMapping("/{id}/commentaires")
     public List<Commentaire> getCommentaires(
             @PathVariable("id") Long sondageId) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         return sondage.getCommentaires();
     }
 
@@ -144,8 +144,8 @@ public class SondageController {
     @GetMapping("/{id}/votes")
     public List<Vote> getVotes(
             @PathVariable("id") Long sondageId) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
+
         return sondage.getVotes();
     }
 
@@ -178,8 +178,7 @@ public class SondageController {
      * @return La meilleure date d'un sondage par rapport aux disponibilités demandées
      */
     String getMeilleureDate(List<ChoixVote> choixVotes, Long sondageId) {
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
+        Sondage sondage = getSondageById(sondageId);
 
         Map<String, Integer> countDispo = new HashMap<>();
         List<String> dates = sondage.getDates();

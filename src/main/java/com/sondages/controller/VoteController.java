@@ -21,12 +21,16 @@ public class VoteController {
 
     private final VoteRepository voteRepository;
     private final ParticipantRepository participantRepository;
+    private final ParticipantController participantController;
     private final SondageRepository sondageRepository;
+    private final SondageController sondageController;
 
     public VoteController(VoteRepository voteRepository, ParticipantRepository participantRepository, SondageRepository sondageRepository) {
         this.voteRepository = voteRepository;
         this.participantRepository = participantRepository;
+        this.participantController = new ParticipantController(participantRepository);
         this.sondageRepository = sondageRepository;
+        this.sondageController = new SondageController(sondageRepository);
     }
 
     @Operation(summary = "Permet de voter pour une date à un sondage")
@@ -40,10 +44,8 @@ public class VoteController {
                      @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "La date sondée")
                              String date) {
 
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
-        Participant participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Participant", "id", participantId));
+        Sondage sondage = sondageController.getSondageById(sondageId);
+        Participant participant = participantController.getParticipantById(participantId);
 
         Vote vote = new Vote();
 
