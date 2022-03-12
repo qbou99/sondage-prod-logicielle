@@ -88,8 +88,8 @@ public class Sondage {
         this.dates.add(date);
     }
 
-    public void deleteDate(int dateId) {
-        this.dates.remove(dateId);
+    public void deleteDate(String date) {
+        this.dates.remove(date);
     }
 
     public List<String> getCommentaires() {
@@ -129,8 +129,8 @@ public class Sondage {
         this.votes.add(vote);
     }
 
-    public void deleteVote(int voteId) {
-        this.votes.remove(voteId);
+    public void deleteVote(Vote vote) {
+        this.votes.remove(vote);
     }
 
     @Override

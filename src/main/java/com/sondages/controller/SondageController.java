@@ -97,20 +97,24 @@ public class SondageController {
         return sondageRepository.save(sondage);
     }
 
-    @Operation(summary = "Supprime une date à un sondage en fonction de son id et de l'id de la date", description = "Permet de supprimer une date qui existe à un sondage spécifique (supprime également les votes contenant cette date)")
-    @Parameters({@Parameter(name = "id", description = "L'id du sondage", example = "1"), @Parameter(name = "date_id", description = "L'id de la date", example = "0")})
-    @DeleteMapping("/supprimerDate/{id}/{date_id}")
+    @Operation(summary = "Supprime une date à un sondage en fonction de son id et de la date choisie", description = "Permet de supprimer une date qui existe à un sondage spécifique (supprime également les votes contenant cette date)")
+    @Parameter(name = "id", description = "L'id du sondage", example = "1")
+    @DeleteMapping("/supprimerDate/{id}")
     public Sondage deleteDate(
             @PathVariable("id") Long sondageId,
-            @PathVariable("date_id") int dateId) {
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "La date que l'on souhaite supprimée du sondage")
+                    String date) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sondage", "id", sondageId));
-        sondage.deleteDate(dateId);
+        sondage.deleteDate(date);
 
-        for (int i = 0; i < sondage.getVotes().size(); i++) {
-            if (sondage.getVotes().get(i).getChoixDate().equals(sondage.getDates().get(dateId)))
-                sondage.deleteVote(i);
+        ArrayList<Vote> voteRemove = new ArrayList<>();
+        for (Vote vote : sondage.getVotes()) {
+            if (vote.getChoixDate().equals(date)) {
+                voteRemove.add(vote);
+            }
         }
+        sondage.getVotes().removeAll(voteRemove);
 
         return sondageRepository.save(sondage);
     }
