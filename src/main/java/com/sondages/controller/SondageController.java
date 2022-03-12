@@ -52,7 +52,7 @@ public class SondageController {
     public Sondage updateSondage(
             @PathVariable(value = "id") Long sondageId,
             @Valid
-            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le sondage modifié")
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le sondage modifié (les dates d'un sondage ne peuvent pas être modifiées)")
                     Sondage updatedSondage) {
         Sondage sondage = sondageRepository.findById(sondageId)
                 .orElseThrow(() -> new ResourceNotFoundException(CLASS_NAME, "id", sondageId));
