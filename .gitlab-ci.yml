@@ -3,6 +3,7 @@ image: maven:3.8.4-jdk-11
 stages:
   - build
   - test
+  - pitest
 
 build:
   stage: build
@@ -13,3 +14,8 @@ test:
   stage: test
   script:
     - ./mvnw clean test
+
+pitest:
+  stage: pitest
+  script:
+    - ./mvnw clean test org.pitest:pitest-maven:mutationCoverage
