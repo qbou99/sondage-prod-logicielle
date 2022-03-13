@@ -24,7 +24,7 @@ public class Vote {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+    private final Date creationDate;
 
     @NotNull
     private ChoixVote choix;
@@ -65,10 +65,6 @@ public class Vote {
 
     public Date getCreationDate() {
         return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
     }
 
     public ChoixVote getChoix() {
