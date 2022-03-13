@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndexController {
 
     @GetMapping
-    public String sayHello() {
-        return "Hello World!";
+    public String presentationProjet() {
+        return "Projet sondage réalisé par Quentin Boucksom et Johann Conicella";
     }
 }
