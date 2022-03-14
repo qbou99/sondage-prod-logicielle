@@ -92,7 +92,7 @@ class VoteControllerTest {
     void givenSondageOuvertAndParticipantAndChoix_whenVote_thenVoteAdded() {
         //given
         Participant p1 = new Participant("Jo");
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.setDateLimite(new Date(Long.MAX_VALUE));
         s1.setEstOuvert(true);
         s1.addDate("2022-03-12");
@@ -116,7 +116,7 @@ class VoteControllerTest {
     void givenSondageFermeAndParticipantAndChoix_whenVote_thenException() {
         //given
         Participant p1 = new Participant("Jo");
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.setDateLimite(new Date(1L));
         s1.setEstOuvert(true);
         s1.addDate("2022-03-12");
@@ -136,7 +136,7 @@ class VoteControllerTest {
     void givenSondageOuvertAndParticipantAndChoix_whenVoteUnknownDate_thenException() {
         //given
         Participant p1 = new Participant("Jo");
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.setDateLimite(new Date(1L));
         s1.setEstOuvert(true);
         s1.addDate("2022-03-12");

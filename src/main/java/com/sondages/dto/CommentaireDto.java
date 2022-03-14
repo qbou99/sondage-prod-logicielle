@@ -23,6 +23,12 @@ public class CommentaireDto {
         this.texte = texte;
     }
 
+    public CommentaireDto(String texte, Participant participant, Long sondageId) {
+        this.participant = participant;
+        this.texte = texte;
+        this.sondageId = sondageId;
+    }
+
     public Commentaire dtoToEntity() {
         Commentaire commentaire = new Commentaire();
         commentaire.setParticipant(this.participant);

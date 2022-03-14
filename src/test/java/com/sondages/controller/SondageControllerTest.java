@@ -1,5 +1,6 @@
 package com.sondages.controller;
 
+import com.sondages.dto.SondageDto;
 import com.sondages.exception.ResourceNotFoundException;
 import com.sondages.model.ChoixVote;
 import com.sondages.model.Commentaire;
@@ -48,8 +49,8 @@ class SondageControllerTest {
     @Test
     void givenSondages_whenGetAll_thenSondages() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
-        Sondage s2 = new Sondage(2L, "Sondage 2", "Un 2e sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
+        Sondage s2 = new Sondage("Sondage 2", "Un 2e sondage");
         List<Sondage> sondages = Arrays.asList(s1, s2);
 
         when(sondageRepository.findAll()).thenReturn(sondages);
@@ -70,22 +71,22 @@ class SondageControllerTest {
     @Test
     void givenSondage_whenAdd_thenSondageAdded() {
         //given
-        Sondage s = new Sondage(1L, "Sondage 1", "Un sondage");
+        SondageDto s = new SondageDto("Sondage 1", "Un sondage");
 
-        when(sondageRepository.save(any(Sondage.class))).thenReturn(s);
+        when(sondageRepository.save(any(Sondage.class))).thenReturn(s.dtoToEntity());
 
         //when
-        /*Sondage result = sondageController.createSondage(s);
+        Sondage result = sondageController.createSondage(s);
 
         //then
         assertThat(result.getNom())
-                .isEqualTo(s.getNom());*/
+                .isEqualTo(s.getNom());
     }
 
     @Test
     void givenSondage1_whenGet1_thenSondage1() {
         //given
-        Sondage s = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s = new Sondage("Sondage 1", "Un sondage");
 
         when(sondageRepository.findById(1L)).thenReturn(Optional.of(s));
 
@@ -112,28 +113,28 @@ class SondageControllerTest {
     @Test
     void givenSondage_whenUpdate_thenSondageUpdated() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.setDateLimite(new Date(1647098725));
 
         when(sondageRepository.findById(1L)).thenReturn(Optional.of(s1));
         when(sondageRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
         //when
-        Sondage s2 = new Sondage(1L, "Sondage 1 V2", "Un meilleur sondage");
+        SondageDto s2 = new SondageDto("Sondage 1 V2", "Un meilleur sondage");
         s2.setDateLimite(new Date(1647098972));
 
-        /*Sondage result = sondageController.updateSondage(1L, s2);
+        Sondage result = sondageController.updateSondage(1L, s2);
 
         //then
         assertThat(result.getNom()).isEqualTo(s2.getNom());
         assertThat(result.getDescription()).isEqualTo(s2.getDescription());
-        assertThat(result.getDateLimite().compareTo(s2.getDateLimite())).isEqualByComparingTo(0);*/
+        assertThat(result.getDateLimite().compareTo(s2.getDateLimite())).isEqualByComparingTo(0);
     }
 
     @Test
     void givenSondage_whenDelete_thenSondageDeleted() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
 
         when(sondageRepository.findById(1L)).thenReturn(Optional.of(s1));
 
@@ -147,7 +148,7 @@ class SondageControllerTest {
     @Test
     void givenSondage_whenClose_thenSondageClosed() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
 
         when(sondageRepository.findById(1L)).thenReturn(Optional.of(s1));
         when(sondageRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
@@ -162,7 +163,7 @@ class SondageControllerTest {
     @Test
     void givenSondage_whenAddDate_thenDateAdded() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
 
         when(sondageRepository.findById(1L)).thenReturn(Optional.of(s1));
         when(sondageRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
@@ -178,7 +179,7 @@ class SondageControllerTest {
     @Test
     void givenSondageWithDate_whenRemoveDate_thenSondageWithoutDate() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.addDate("2022-03-12");
         s1.addDate("2022-03-13");
         s1.addVote(new Vote("2022-03-12"));
@@ -200,7 +201,7 @@ class SondageControllerTest {
     @Test
     void givenSondageWithDates_whenGetDates_thenDates() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.addDate("2022-03-12");
         s1.addDate("2022-03-13");
 
@@ -218,7 +219,7 @@ class SondageControllerTest {
     @Test
     void givenSondageWithComentaires_whenGetComentaires_thenComentaires() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.addCommentaire(new Commentaire("Commentaire 1"));
         s1.addCommentaire(new Commentaire("Commentaire 2"));
 
@@ -236,7 +237,7 @@ class SondageControllerTest {
     @Test
     void givenSondageWithVotes_whenGetVotes_thenVotes() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.addVote(new Vote("2022-03-12"));
         s1.addVote(new Vote("2022-03-13"));
 
@@ -254,7 +255,7 @@ class SondageControllerTest {
     @Test
     void givenSondageWithVotesAndListTypeChoix_whenMeilleurDate_thenDate() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.addDate("2022-03-12");
         s1.addDate("2022-03-13");
         s1.addVote(new Vote("2022-03-12", ChoixVote.DISPONIBLE));
@@ -273,7 +274,7 @@ class SondageControllerTest {
     @Test
     void givenSondageWithVotes_whenMeilleurDateCertain_thenDate() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.addDate("2022-03-12");
         s1.addDate("2022-03-13");
         s1.addVote(new Vote("2022-03-12", ChoixVote.DISPONIBLE));
@@ -294,7 +295,7 @@ class SondageControllerTest {
     @Test
     void givenSondageWithVotes_whenMeilleurDateEventuellement_thenDate() {
         //given
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.addDate("2022-03-12");
         s1.addDate("2022-03-13");
         s1.addVote(new Vote("2022-03-12", ChoixVote.DISPONIBLE));

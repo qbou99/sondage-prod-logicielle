@@ -7,6 +7,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +33,20 @@ public class SondageDto {
         sondage.setDateLimite(this.dateLimite);
         sondage.setDates(this.dates);
         return sondage;
+    }
+
+    public SondageDto(String nom, String description) {
+        this.nom = nom;
+        this.description = description;
+        this.dateLimite = new Date();
+        this.dates = new ArrayList<>();
+    }
+
+    public SondageDto(String nom, String description, Date dateLimite, List<String> dates) {
+        this.nom = nom;
+        this.description = description;
+        this.dateLimite = dateLimite;
+        this.dates = dates;
     }
 
     public String getNom() {

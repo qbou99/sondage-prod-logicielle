@@ -26,6 +26,17 @@ public class VoteDto {
         return vote;
     }
 
+    public VoteDto(String choixDate) {
+        this.participant = null;
+        this.choixDate = choixDate;
+    }
+
+    public VoteDto(String choixDate, Participant participant, ChoixVote choixVote) {
+        this.participant = participant;
+        this.choixDate = choixDate;
+        this.choix = choixVote;
+    }
+
     public Participant getParticipant() {
         return participant;
     }

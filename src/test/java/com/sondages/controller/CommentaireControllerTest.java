@@ -113,7 +113,7 @@ class CommentaireControllerTest {
     void givenCommentaire_whenDelete_thenCommentaireDeleted() {
         //given
         Commentaire c1 = new Commentaire("Commentaire 1");
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         c1.setSondageId(1L);
         s1.addCommentaire(c1);
 
@@ -132,7 +132,7 @@ class CommentaireControllerTest {
     void givenSondageOuvertAndParticipant_whenAddCommentaire_thenCommentaireAddedToSondage() {
         //given
         Participant p1 = new Participant("Jo");
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.setDateLimite(new Date(Long.MAX_VALUE));
         s1.setEstOuvert(true);
 
@@ -155,7 +155,7 @@ class CommentaireControllerTest {
     void givenSondageFermeAndParticipant_whenAddCommentaire_thenException() {
         //given
         Participant p1 = new Participant("Jo");
-        Sondage s1 = new Sondage(1L, "Sondage 1", "Un sondage");
+        Sondage s1 = new Sondage("Sondage 1", "Un sondage");
         s1.setDateLimite(new Date(1L));
         s1.setEstOuvert(true);
 
