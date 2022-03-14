@@ -18,6 +18,11 @@ public class CommentaireDto {
     @NotBlank
     private String texte;
 
+    public CommentaireDto() {
+        this.participant = null;
+        this.texte = "";
+    }
+
     public CommentaireDto(String texte) {
         this.participant = null;
         this.texte = texte;

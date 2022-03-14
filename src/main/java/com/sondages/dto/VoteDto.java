@@ -26,6 +26,11 @@ public class VoteDto {
         return vote;
     }
 
+    public VoteDto() {
+        this.participant = null;
+        this.choixDate = "";
+    }
+
     public VoteDto(String choixDate) {
         this.participant = null;
         this.choixDate = choixDate;

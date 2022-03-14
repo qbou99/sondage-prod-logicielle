@@ -35,6 +35,13 @@ public class SondageDto {
         return sondage;
     }
 
+    public SondageDto() {
+        this.nom = "";
+        this.description = "";
+        this.dateLimite = new Date();
+        this.dates = new ArrayList<>();
+    }
+
     public SondageDto(String nom, String description) {
         this.nom = nom;
         this.description = description;

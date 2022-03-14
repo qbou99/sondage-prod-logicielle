@@ -9,6 +9,10 @@ public class ParticipantDto {
     @NotBlank
     private String nom;
 
+    public ParticipantDto() {
+        this.nom = "";
+    }
+
     public ParticipantDto(String nom) {
         this.nom = nom;
     }
