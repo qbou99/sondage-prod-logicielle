@@ -20,14 +20,12 @@ import java.util.List;
 public class VoteController {
 
     private final VoteRepository voteRepository;
-    private final ParticipantRepository participantRepository;
     private final ParticipantController participantController;
     private final SondageRepository sondageRepository;
     private final SondageController sondageController;
 
     public VoteController(VoteRepository voteRepository, ParticipantRepository participantRepository, SondageRepository sondageRepository) {
         this.voteRepository = voteRepository;
-        this.participantRepository = participantRepository;
         this.participantController = new ParticipantController(participantRepository);
         this.sondageRepository = sondageRepository;
         this.sondageController = new SondageController(sondageRepository);

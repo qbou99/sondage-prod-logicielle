@@ -1,5 +1,6 @@
 package com.sondages.controller;
 
+import com.sondages.dto.CommentaireDto;
 import com.sondages.exception.BadRequestException;
 import com.sondages.exception.ResourceNotFoundException;
 import com.sondages.model.Commentaire;
@@ -20,7 +21,6 @@ import java.util.List;
 @RequestMapping("/commentaire")
 public class CommentaireController {
     private final CommentaireRepository commentaireRepository;
-    private final ParticipantRepository participantRepository;
     private final ParticipantController participantController;
     private final SondageRepository sondageRepository;
     private final SondageController sondageController;
@@ -29,7 +29,6 @@ public class CommentaireController {
 
     public CommentaireController(CommentaireRepository commentaireRepository, ParticipantRepository participantRepository, SondageRepository sondageRepository) {
         this.commentaireRepository = commentaireRepository;
-        this.participantRepository = participantRepository;
         this.participantController = new ParticipantController(participantRepository);
         this.sondageRepository = sondageRepository;
         this.sondageController = new SondageController(sondageRepository);
@@ -87,10 +86,10 @@ public class CommentaireController {
             @PathVariable(value = "id") Long commentaireId,
             @Valid
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le commentaire modifié (seul le texte peut changer)")
-                    Commentaire updatedCommentaire) {
+                    CommentaireDto updatedCommentaireDto) {
         Commentaire commmentaire = getCommentaireById(commentaireId);
 
-        commmentaire.setTexte(updatedCommentaire.getTexte());
+        commmentaire.setTexte(updatedCommentaireDto.getTexte());
         return commentaireRepository.save(commmentaire);
     }
 

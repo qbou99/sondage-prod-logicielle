@@ -1,7 +1,11 @@
 package com.sondages.controller;
 
+import com.sondages.dto.SondageDto;
 import com.sondages.exception.ResourceNotFoundException;
-import com.sondages.model.*;
+import com.sondages.model.ChoixVote;
+import com.sondages.model.Commentaire;
+import com.sondages.model.Sondage;
+import com.sondages.model.Vote;
 import com.sondages.repository.SondageRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,8 +38,8 @@ public class SondageController {
     public Sondage createSondage(
             @Valid
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le sondage créé")
-                    Sondage sondage) {
-        return sondageRepository.save(sondage);
+                    SondageDto sondageDto) {
+        return sondageRepository.save(sondageDto.dtoToEntity());
     }
 
     @Operation(summary = "Récupère un sondage en fonction de son id", description = "Permet de retrouver les informations concernant un sondage spécifique")
@@ -53,12 +57,12 @@ public class SondageController {
             @PathVariable(value = "id") Long sondageId,
             @Valid
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le sondage modifié (les dates d'un sondage ne peuvent pas être modifiées)")
-                    Sondage updatedSondage) {
+                    SondageDto updatedSondageDto) {
         Sondage sondage = getSondageById(sondageId);
 
-        sondage.setNom(updatedSondage.getNom());
-        sondage.setDescription(updatedSondage.getDescription());
-        sondage.setDateLimite(updatedSondage.getDateLimite());
+        sondage.setNom(updatedSondageDto.getNom());
+        sondage.setDescription(updatedSondageDto.getDescription());
+        sondage.setDateLimite(updatedSondageDto.getDateLimite());
         return sondageRepository.save(sondage);
     }
 

@@ -1,5 +1,6 @@
 package com.sondages.controller;
 
+import com.sondages.dto.ParticipantDto;
 import com.sondages.exception.ResourceNotFoundException;
 import com.sondages.model.Participant;
 import com.sondages.repository.ParticipantRepository;
@@ -81,9 +82,9 @@ class ParticipantControllerTest {
     @Test
     void givenSondage_whenAdd_thenSondageAdded() {
         //given
-        Participant p1 = new Participant("Jo");
+        ParticipantDto p1 = new ParticipantDto("Jo");
 
-        when(participantRepository.save(any(Participant.class))).thenReturn(p1);
+        when(participantRepository.save(any(Participant.class))).thenReturn(p1.dtoToEntity());
 
         //when
         Participant result = participantController.createParticipant(p1);

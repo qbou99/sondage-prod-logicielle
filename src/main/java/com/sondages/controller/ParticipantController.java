@@ -1,5 +1,6 @@
 package com.sondages.controller;
 
+import com.sondages.dto.ParticipantDto;
 import com.sondages.exception.ResourceNotFoundException;
 import com.sondages.model.Participant;
 import com.sondages.repository.ParticipantRepository;
@@ -35,7 +36,7 @@ public class ParticipantController {
 
     @Operation(summary = "Créé un participant", description = "Permet de créer un participant à l'aide d'un document json")
     @PostMapping("")
-    public Participant createParticipant(@Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le participant créé") Participant participant) {
-        return participantRepository.save(participant);
+    public Participant createParticipant(@Valid @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Le body avec les informations que contiendra le participant créé") ParticipantDto participantDto) {
+        return participantRepository.save(participantDto.dtoToEntity());
     }
 }

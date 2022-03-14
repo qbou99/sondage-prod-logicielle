@@ -1,5 +1,6 @@
 package com.sondages.controller;
 
+import com.sondages.dto.CommentaireDto;
 import com.sondages.exception.BadRequestException;
 import com.sondages.exception.ResourceNotFoundException;
 import com.sondages.model.Commentaire;
@@ -100,7 +101,7 @@ class CommentaireControllerTest {
         when(commentaireRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
         //when
-        Commentaire c2 = new Commentaire("Commentaire 2");
+        CommentaireDto c2 = new CommentaireDto("Commentaire 2");
 
         Commentaire result = commentaireController.updateCommentaire(1L, c2);
 
