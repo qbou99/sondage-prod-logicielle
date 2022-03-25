@@ -11,6 +11,8 @@ import com.sondages.repository.ParticipantRepository;
 import com.sondages.repository.SondageRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +26,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +43,9 @@ class CommentaireControllerTest {
 
     @Mock
     ParticipantRepository participantRepository;
+
+    @Captor
+    ArgumentCaptor<Commentaire> commentaireArgumentCaptor;
 
     private static final long UNKNOWN_ID = 1337L;
 
@@ -124,8 +130,11 @@ class CommentaireControllerTest {
         ResponseEntity<?> result = commentaireController.deleteCommentaire(1L);
 
         //then
+        verify(commentaireRepository).delete(commentaireArgumentCaptor.capture());
+
         assertThat(result.getStatusCodeValue()).isEqualTo(ResponseEntity.ok().build().getStatusCodeValue());
         assertThat(s1.getCommentaires()).isEmpty();
+        assertThat(commentaireArgumentCaptor.getValue().getTexte()).isEqualTo(c1.getTexte());
     }
 
     @Test

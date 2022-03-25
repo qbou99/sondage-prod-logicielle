@@ -9,6 +9,8 @@ import com.sondages.model.Vote;
 import com.sondages.repository.SondageRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +35,9 @@ class SondageControllerTest {
 
     @Mock
     SondageRepository sondageRepository;
+
+    @Captor
+    ArgumentCaptor<Sondage> sondageArgumentCaptor;
 
     private static final long UNKNOWN_ID = 1337L;
 
@@ -142,7 +148,10 @@ class SondageControllerTest {
         ResponseEntity<?> result = sondageController.deleteSondage(1L);
 
         //then
+        verify(sondageRepository).delete(sondageArgumentCaptor.capture());
+
         assertThat(result.getStatusCodeValue()).isEqualTo(ResponseEntity.ok().build().getStatusCodeValue());
+        assertThat(sondageArgumentCaptor.getValue().getNom()).isEqualTo(s1.getNom());
     }
 
     @Test
